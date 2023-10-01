@@ -1,4 +1,4 @@
 {
-    "start": "MainMenu",
-    "2": "Game"
+    "1": "Game",
+    "start": "MainMenu"
 }

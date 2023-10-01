@@ -301,7 +301,6 @@ namespace TDS
 	void SceneManager::newScene(std::string scene)
 	{
 		allScenes.emplace_back(scene);
-		currentScene = scene;
 	}
 	/*!*************************************************************************
 	This function loads given scene
