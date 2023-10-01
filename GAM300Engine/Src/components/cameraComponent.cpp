@@ -1,32 +1,18 @@
-/*!*************************************************************************
-****
-\file cameraComponent.cpp
-\author Go Ruo Yan
-\par DP email: ruoyan.go@digipen.edu
-\date 28-9-2023
-\brief  This program defines functions of cameraComponent class
-****************************************************************************
-***/
-
 #include "components/cameraComponent.h"
 
-namespace TDS 
-{
+namespace TDS {
+
 	/*!*************************************************************************
-	Initializes the CameraComponent when created
+	Constructor for camera component
 	****************************************************************************/
 	CameraComponent::CameraComponent()
 	{ }
 
-	/*!*************************************************************************
-	Initializes the CameraComponent when created, given another CameraComponent
-	to move (for ECS)
-	****************************************************************************/
 	CameraComponent::CameraComponent(CameraComponent&& toMove) noexcept
 	{ }
 
 	/*!*************************************************************************
-	Deserializes the CameraComponent
+	Derserialize camera component
 	****************************************************************************/
 	bool CameraComponent::Deserialize(const rapidjson::Value& obj)
 	{
@@ -36,7 +22,7 @@ namespace TDS
 	}
 
 	/*!*************************************************************************
-	Serializes the CameraComponent
+	Serialize camera component
 	****************************************************************************/
 	bool CameraComponent::Serialize(rapidjson::PrettyWriter<rapidjson::StringBuffer>* writer) const
 	{
@@ -44,4 +30,9 @@ namespace TDS
 		writer;
 		return false;
 	}
+
+	//void CameraComponent::ImGuiDisplay()
+	//{
+
+	//}
 }

@@ -1,27 +1,16 @@
-/*!*************************************************************************
-****
-\file eventManager.hpp
-\author Go Ruo Yan
-\par DP email: ruoyan.go@digipen.edu
-\date 28-9-2023
-\brief  This program defines the functions in the eventManager class
-****************************************************************************
-***/
-
 namespace TDS
 {
-	/*!*************************************************************************
-	Constructor of the EventManager class
-	****************************************************************************/
 	inline EventManager::EventManager() { }
-	/*!*************************************************************************
-	Destructor of the EventManager class
-	****************************************************************************/
 	inline EventManager::~EventManager() { }
 
-	/*!*************************************************************************
+	/*  _________________________________________________________________________*/
+	/*! subscribe
+
+	@param						System enumeration
+	@return						None
+
 	This function is called during initiailise to create a new queue
-	****************************************************************************/
+	*/
 	template<typename U>
 	inline void EventManager::subscribe(U systemID)
 	{
@@ -36,19 +25,21 @@ namespace TDS
 		masterQueue.emplace(systemIDMask, eventQueue);
 	}
 
-	/*!*************************************************************************
-	This function is called during initiailise to create a new queue
-	****************************************************************************/
 	template<typename T>
 	inline void EventManager::post(T event) // base function
 	{
 
 	}
 
-	/*!*************************************************************************
+	/*  _________________________________________________________________________*/
+	/*! post
+
+	@param						Templated to for derived event classes
+	@return						None
+
 	This function is called in runSystems to queue the events,
 	splits the events into different queues here
-	****************************************************************************/
+	*/
 	template<typename T, typename U, typename... S>
 	inline void EventManager::post(T event, U currentSystem, S... systemInput)
 	{
@@ -76,18 +67,28 @@ namespace TDS
 		post(event, systemInput...);
 	}
 
-	/*!*************************************************************************
+	/*  _________________________________________________________________________*/
+	/*! findQueue
+
+	@param						System enumeration
+	@return						Queue for the system
+
 	This function is used to get the queue based on the SystemID
-	****************************************************************************/
+	*/
 	template<typename U>
 	inline std::vector<std::shared_ptr<Event>>& EventManager::findQueue(U systemID)
 	{
 		return masterQueue[static_cast<char>(systemID)];
 	}
 
-	/*!*************************************************************************
-	This function finds the entity in the queue
-	****************************************************************************/
+	/*  _________________________________________________________________________*/
+	/*! findEntity
+
+	@param						SystemID
+	@return						Pointer to the dequeued event
+
+	This function is called in the systems to read and dequeue the queue
+	*/
 	template<typename T, typename U>
 	inline std::shared_ptr<T> EventManager::findEntity(U systemID, EntityID toFind)
 	{
@@ -104,9 +105,14 @@ namespace TDS
 		return nullptr;
 	}
 
-	/*!*************************************************************************
-	This function find event in the queue
-	****************************************************************************/
+	/*  _________________________________________________________________________*/
+	/*! findEvent
+
+	@param						SystemID
+	@return						Pointer to the dequeued event
+
+	This function is called in the systems to read and dequeue the queue
+	*/
 	template<typename T, typename U>
 	inline std::shared_ptr<T> EventManager::findEvent(U systemID, int toFind)
 	{
@@ -122,9 +128,14 @@ namespace TDS
 		return eventPop;
 	}
 
-	/*!*************************************************************************
-	This function dequeue the queue
-	****************************************************************************/
+	/*  _________________________________________________________________________*/
+	/*! findQueue
+
+	@param						SystemID
+	@return						Pointer to the dequeued event
+
+	This function is called in the systems to read and dequeue the queue
+	*/
 	template<typename U>
 	inline void EventManager::dequeue(U systemID, EntityID toRemove)
 	{
@@ -139,18 +150,12 @@ namespace TDS
 		}
 	}
 
-	/*!*************************************************************************
-	This function removes an entity from the queue
-	****************************************************************************/
 	template <typename U>
 	inline void EventManager::removeFromQueue(U systemID, EntityID toRemove)
 	{
 		dequeue(systemID, toRemove);
 	}
 
-	/*!*************************************************************************
-	This function removes an entity from all queues
-	****************************************************************************/
 	inline void EventManager::removeFromQueues(EntityID toRemove)
 	{
 		for (auto iter = masterQueue.begin(); iter != masterQueue.end(); ++iter)
@@ -159,9 +164,6 @@ namespace TDS
 		}
 	}
 
-	/*!*************************************************************************
-	This function removes a queue
-	****************************************************************************/
 	template<typename U>
 	void EventManager::removeQueue(U systemID)
 	{
@@ -169,9 +171,6 @@ namespace TDS
 		masterQueue.erase(system);
 	}
 
-	/*!*************************************************************************
-	This function adds a queue
-	****************************************************************************/
 	template<typename U>
 	void EventManager::addQueue(U systemID)
 	{
@@ -179,9 +178,6 @@ namespace TDS
 		masterQueue[system];
 	}
 
-	/*!*************************************************************************
-	This function clears all queues
-	****************************************************************************/
 	inline void EventManager::clearQueues()
 	{
 		for (auto iter = masterQueue.begin(); iter != masterQueue.end(); ++iter)

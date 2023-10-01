@@ -1,19 +1,9 @@
-/*!*************************************************************************
-****
-\file rigidBody.cpp
-\author Go Ruo Yan
-\par DP email: ruoyan.go@digipen.edu
-\date 28-9-2023
-\brief  This program defines the functions in the RigidBody component class
-****************************************************************************
-***/
-
 #include "components/rigidBody.h"
 
 namespace TDS
 {
 	/*!*************************************************************************
-	Initializes the RigidBody component when created
+	Ctor for RigidBody Component
 	****************************************************************************/
 	RigidBody::RigidBody() : mAcceleration		(Vec3(0.0f, 0.0f, 0.0f)),
 							 mLinearVelocity	(Vec3(0.0f, 0.0f, 0.0f)),
@@ -30,10 +20,6 @@ namespace TDS
 	{ }
 
 
-	/*!*************************************************************************
-	Initializes the RigidBody component when created, given another RigidBody
-	component to move (for ECS)
-	****************************************************************************/
 	RigidBody::RigidBody(RigidBody&& toMove) noexcept : mAcceleration		(toMove.mAcceleration),
 														mLinearVelocity		(toMove.mLinearVelocity),
 														mAngularVelocity	(toMove.mAngularVelocity),
@@ -50,7 +36,7 @@ namespace TDS
 	{ }
 
 	/*!*************************************************************************
-	Deserializes the RigidBody component
+	Deserialize for RigidBody
 	****************************************************************************/
 	bool RigidBody::Deserialize(const rapidjson::Value& obj)
 	{
@@ -70,7 +56,7 @@ namespace TDS
 	}
 
 	/*!*************************************************************************
-	Serializes the RigidBody component
+	Serialize for RigidBody
 	****************************************************************************/
 	bool RigidBody::Serialize(rapidjson::PrettyWriter<rapidjson::StringBuffer>* writer) const
 	{
@@ -140,4 +126,18 @@ namespace TDS
 
 		return true;
 	}
+
+	//void RigidBody::ImGuiDisplay()
+	//{
+	//	ImguiVec3Input("Input Force", mInputForce);
+	//	ImguiVec3Input("Linear Velocity", mLinearVelocity);
+	//	ImguiVec3Input("Angular Velocity", mAngularVelocity);
+	//	ImguiVec3Input("Acceleration", mAcceleration);
+	//	ImguiVec3Input("Direction", mDirection);
+	//	ImguiVec3Input("Next Position", mNextPosition);
+	//	ImguiFloatInput("Friction", mFriction);
+	//	ImguiFloatInput("Restitution", mRestitution);
+	//	ImguiFloatInput("Mass", mMass);
+	//	ImguiFloatInput("Gravity", mGravity);
+	//}
 }

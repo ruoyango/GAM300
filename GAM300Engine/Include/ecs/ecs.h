@@ -1,13 +1,3 @@
-/*!*************************************************************************
-****
-\file ecs.h
-\author Go Ruo Yan
-\par DP email: ruoyan.go@digipen.edu
-\date 28-9-2023
-\brief  This program declares functions of the ECS
-****************************************************************************
-***/
-
 #ifndef ECS_
 #define ECS_
 

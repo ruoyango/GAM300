@@ -1,20 +1,7 @@
-/*!*************************************************************************
-****
-\file componentHelperFunctions.cpp
-\author Go Ruo Yan
-\par DP email: ruoyan.go@digipen.edu
-\date 28-9-2023
-\brief  This program defines the helper functions for the component class
-****************************************************************************
-***/
-
 #include "components/components.h"
 
 namespace TDS
 {
-	/*!*************************************************************************
-	This function is a helper function to add components by string name
-	****************************************************************************/
 	IComponent* addComponentByName(std::string componentName, EntityID entityID)
 	{
 		if (componentName == "AI")
@@ -41,9 +28,6 @@ namespace TDS
 			return nullptr;
 	}
 
-	/*!*************************************************************************
-	This function is a helper function to get components by string name
-	****************************************************************************/
 	IComponent* getComponentByName(std::string componentName, EntityID entityID)
 	{
 		if (componentName == "AI")
@@ -70,9 +54,6 @@ namespace TDS
 			return nullptr;
 	}
 
-	/*!*************************************************************************
-	This function is a helper function to remove components by string name
-	****************************************************************************/
 	void removeComponentByName(std::string componentName, EntityID entityID)
 	{
 		if (componentName == "AI")

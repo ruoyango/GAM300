@@ -1,21 +1,7 @@
-/*!*************************************************************************
-****
-\file ImguiHierarchy.cpp
-\author Go Ruo Yan
-\par DP email: ruoyan.go@digipen.edu
-\date 28-9-2023
-\brief  This program defines the functions in the Level Editor Hierarchy 
-		panel
-****************************************************************************
-***/
-
 #include "imguiHelper/ImguiHierarchy.h"
 
 namespace TDS
 {
-	/*!*************************************************************************
-	This function initializes the Hierarchy panel
-	****************************************************************************/
 	Hierarchy::Hierarchy()
 	{
 		selectedEntity = 0;
@@ -29,9 +15,6 @@ namespace TDS
 		//insertEntities();
 	}
 
-	/*!*************************************************************************
-	This function is the update function for Hierarchy panel
-	****************************************************************************/
 	void Hierarchy::update()
 	{
 		if (ImGui::BeginMenuBar())

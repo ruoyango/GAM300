@@ -1,13 +1,3 @@
-/*!*************************************************************************
-****
-\file sceneManager.h
-\author Go Ruo Yan
-\par DP email: ruoyan.go@digipen.edu
-\date 28-9-2023
-\brief  This program declares the functions in the sceneManager class
-****************************************************************************
-***/
-
 #ifndef SCENEMANAGER
 #define SCENEMANAGER
 
@@ -39,40 +29,16 @@ namespace TDS
 		****************************************************************************/
 		virtual bool Serialize(rapidjson::PrettyWriter<rapidjson::StringBuffer>* writer) const;
 
-		/*!*************************************************************************
-		This function serializes scenes into JSON files
-		****************************************************************************/
 		bool sceneSerialize();
-		/*!*************************************************************************
-		This function deserializes scenes from JSON files
-		****************************************************************************/
 		bool sceneDeserialize();
 
-		/*!*************************************************************************
-		This function adds a new scene into the Scene Manager
-		****************************************************************************/
 		void newScene(std::string scene);
-		/*!*************************************************************************
-		This function loads given scene
-		****************************************************************************/
 		void loadScene(std::string scene);
 
-		/*!*************************************************************************
-		This function saves the given scene
-		****************************************************************************/
 		void saveScene(std::string scene);
-		/*!*************************************************************************
-		This function deletes the given scene
-		****************************************************************************/
 		void deleteScene(std::string scene);
 
-		/*!*************************************************************************
-		This function is the getter function for current scene
-		****************************************************************************/
 		std::string getCurrentScene();
-		/*!*************************************************************************
-		This function is the getter function for all scenes in Scene Browser
-		****************************************************************************/
 		std::vector<std::string>& getScenes();
 
 		bool isGameplay;

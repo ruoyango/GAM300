@@ -1,14 +1,3 @@
-/*!*************************************************************************
-****
-\file ImguiBehaviourTree.h
-\author Go Ruo Yan
-\par DP email: ruoyan.go@digipen.edu
-\date 28-9-2023
-\brief  This program declares the functions in the Level Editor Behaviour
-		Tree panel
-****************************************************************************
-***/
-
 #ifndef IMGUI_BEHAVIOUR_TREE
 #define IMGUI_BEHAVIOUR_TREE
 
@@ -31,9 +20,18 @@ namespace TDS
 		// STRUCTS ======================================================================================
 		struct BTENode
 		{
-			/*!*************************************************************************
+			/*  _________________________________________________________________________*/
+			/*! constructor
+
+			@param _id				ID of the node
+			@param _name			Name of the node
+			@param _type			BehaviorTree type of the node
+			@param _position		Position of the node
+			@param _inputsCount		Number of inputs of the node
+			@param _outputsCount	Number of outputs of the node
+
 			This function is a constructor for the nodes in the behaviorTree editor.
-			****************************************************************************/
+			*/
 			BTENode(
 				int _id,
 				std::string _name,
@@ -42,16 +40,26 @@ namespace TDS
 				int _inputsCount,
 				int _outputsCount);
 
-			/*!*************************************************************************
+			/*  _________________________________________________________________________*/
+			/*! getInputSlotPos
+
+			@param slotNumber		Input slot id
+			@return					Position of the input slot
+
 			This function calculates the position of the input slot id given, based on
 			the node position and number of inputs it has.
-			****************************************************************************/
+			*/
 			Vec2 getInputSlotPos(int slotNumber) const;
 
-			/*!*************************************************************************
+			/*  _________________________________________________________________________*/
+			/*! getOutputSlotPos
+
+			@param slotNumber		Output slot id
+			@return					Position of the output slot
+
 			This function calculates the position of the output slot id given, based on
 			the node position and number of outputs it has.
-			****************************************************************************/
+			*/
 			Vec2 getOutputSlotPos(int slotNumber) const;
 
 			int id;
@@ -68,27 +76,42 @@ namespace TDS
 
 		struct BTELink
 		{
-			/*!*************************************************************************
+			/*  _________________________________________________________________________*/
+			/*! constructor
+
+			@param inputIndex		Index of the input node in the node list
+			@param inputSlot		Index of the input slot
+			@param outputIndex		Output of the input node in the node list
+			@param outputSlot		Output of the input slot
+
 			This function connects the 2 nodes together, drawing a bezier curve line,
 			joining the input slot with the output slot.
-			****************************************************************************/
+			*/
 			BTELink(int inputIndex, int inputSlot, int outputIndex, int outputSlot);
 
 			int InputIdx, InputSlot, OutputIdx, OutputSlot;
 		};
-		/*!*************************************************************************
-		This function checks if the link is colliding with the node.
-		****************************************************************************/
-		bool nodeLinkButtonCheck(Vec2 nodeLink);
+		/*  _________________________________________________________________________*/
+		/*! nodeLinkButtonCheck
 
-		/*!*************************************************************************
-		This function initializes the Behaviour Tree panel
-		****************************************************************************/
+		@param nodeLink			Position of the link to check
+		@return					If its colliding
+
+		This function checks if the link is colliding with the node.
+		*/
+		bool nodeLinkButtonCheck(Vec2 nodeLink);
+		/*  _________________________________________________________________________*/
+		/*! changeBehaviorTree (no longer using)
+
+		@param nodeLink			Index of behaviorTree in list
+		@return					None
+
+		This function checks if the link is colliding with the node.
+		*/
+		//void changeBehaviorTree(int behaviorTreeIndex);
+
 		BehaviourTreePanel();
 
-		/*!*************************************************************************
-		This function is the update function for Behaviour Tree panel
-		****************************************************************************/
 		void update();
 
 		// 0 - Control Flow
