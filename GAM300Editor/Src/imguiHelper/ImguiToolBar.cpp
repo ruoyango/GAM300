@@ -114,6 +114,7 @@ namespace TDS
 			if (isSaveScene) {
 
 				SceneManager::GetInstance()->saveScene(SceneManager::GetInstance()->getCurrentScene());
+				SceneManager::GetInstance()->sceneSerialize();
 			}
 		}
 		ImGui::PopStyleColor();
