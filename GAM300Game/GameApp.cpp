@@ -137,7 +137,7 @@ namespace TDS
             Input::keystatus = Input::KeyStatus::RELEASED;
             Input::keystatus = Input::KeyStatus::IDLE;
         }break;
-        
+
         case WM_INPUT: {
 
             RAWINPUT rawInput;
@@ -160,7 +160,7 @@ namespace TDS
 
         }break;
 
-        
+
         }
     }
     void GamApp::SetWindowHandle(HWND hWnd)
@@ -174,21 +174,21 @@ namespace TDS
 
     void GamApp::Initialize()
     {
-       GraphicsManager::getInstance().Init(&m_window);
-       AssetManager::GetInstance()->PreloadAssets();
-       /*skyboxrender.Init();*/
-       GraphicsManager::getInstance().GetDebugRenderer().Init();
-       GraphicsManager::getInstance().InitSkyBox();
+        GraphicsManager::getInstance().Init(&m_window);
+        AssetManager::GetInstance()->PreloadAssets();
+        /*skyboxrender.Init();*/
+        GraphicsManager::getInstance().GetDebugRenderer().Init();
+        GraphicsManager::getInstance().InitSkyBox();
 
-       RAWINPUTDEVICE rid;
-       rid.usUsagePage = 0x01;  // Mouse
-       rid.usUsage = 0x02;      // Mouse
-       rid.dwFlags = 0;
-       rid.hwndTarget = NULL;
+        RAWINPUTDEVICE rid;
+        rid.usUsagePage = 0x01;  // Mouse
+        rid.usUsage = 0x02;      // Mouse
+        rid.dwFlags = 0;
+        rid.hwndTarget = NULL;
 
-       if (RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)) == FALSE) {
-           std::cout << "Mouse Failed to Register" << std::endl;
-       }
+        if (RegisterRawInputDevices(&rid, 1, sizeof(RAWINPUTDEVICE)) == FALSE) {
+            std::cout << "Mouse Failed to Register" << std::endl;
+        }
     }
 
     void GamApp::FixedUpdate()
@@ -312,7 +312,7 @@ namespace TDS
             GraphicsManager::getInstance().setCamera(m_GameCamera);
             GraphicsManager::getInstance().GetCamera().setEditorCamera(false);
             GraphicsManager::getInstance().GetCamera().setScrollWheel(false);
-            
+
 
             GraphicsManager::getInstance().GetCamera().UpdateCamera(DeltaTime, isPlaying);
 
@@ -327,14 +327,14 @@ namespace TDS
 
             }
 
+
             if (isPlaying)
             {
-                //if (InputSystem::GetInstance()->isKeyDown(VK_CONTROL) && InputSystem::GetInstance()->isKeyPressed(VK_ESCAPE))
-                //{
-                //    proxy_audio_system::ScriptPlayAllPaused();
-                //    gamePaused = !gamePaused;
-                //    std::cout << "editor system paused = " << gamePaused << std::endl;
-                //}
+                if (Input::isKeyPressed(VK_ESCAPE))
+                {
+                    gamePaused = !gamePaused;
+                    proxy_audio_system::ScriptPlayAllPaused();
+                }
 
                 if (startPlaying)
                 {
@@ -355,14 +355,14 @@ namespace TDS
             }
             else
             {
-                InputSystem::GetInstance()->setMouseLock(false);
-                InputSystem::GetInstance()->setCursorVisible(true);
                 startPlaying = true;
                 SceneManager::GetInstance()->isPlaying = false;
                 if (PhysicsSystem::GetIsPlaying() || CameraSystem::GetIsPlaying()) // consider moving it to another seperate system (EditorApp?)
                 {
                     PhysicsSystem::SetIsPlaying(false);
                     CameraSystem::SetIsPlaying(false);
+                    InputSystem::GetInstance()->setMouseLock(false);
+                    InputSystem::GetInstance()->setCursorVisible(true);
                 }
                 proxy_audio_system::ScriptPauseAll();
             }
@@ -372,9 +372,13 @@ namespace TDS
             {
                 GraphicsManager::getInstance().StartFrame();
 
+
                 ecs.runSystems(3, DeltaTime);
 
+
+
                 GraphicsManager::getInstance().DrawFrame();
+
                 GraphicsManager::getInstance().EndFrame();
             }
             // Reloading
@@ -712,7 +716,7 @@ namespace TDS
 
     void GamApp::startScriptEngine()
     {
-         //Get the .NET Runtime's path first
+        //Get the .NET Runtime's path first
         const auto DOT_NET_PATH = getDotNetRuntimePath();
         if (DOT_NET_PATH.empty())
             throw std::runtime_error("Failed to find .NET Runtime.");
