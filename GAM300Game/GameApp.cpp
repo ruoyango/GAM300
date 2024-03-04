@@ -327,14 +327,14 @@ namespace TDS
 
             }
 
-
             if (isPlaying)
             {
-                if (Input::isKeyPressed(VK_ESCAPE))
-                {
-                    gamePaused = !gamePaused;
-                    proxy_audio_system::ScriptPlayAllPaused();
-                }
+                //if (InputSystem::GetInstance()->isKeyDown(VK_CONTROL) && InputSystem::GetInstance()->isKeyPressed(VK_ESCAPE))
+                //{
+                //    proxy_audio_system::ScriptPlayAllPaused();
+                //    gamePaused = !gamePaused;
+                //    std::cout << "editor system paused = " << gamePaused << std::endl;
+                //}
 
                 if (startPlaying)
                 {
@@ -355,14 +355,14 @@ namespace TDS
             }
             else
             {
+                InputSystem::GetInstance()->setMouseLock(false);
+                InputSystem::GetInstance()->setCursorVisible(true);
                 startPlaying = true;
                 SceneManager::GetInstance()->isPlaying = false;
                 if (PhysicsSystem::GetIsPlaying() || CameraSystem::GetIsPlaying()) // consider moving it to another seperate system (EditorApp?)
                 {
                     PhysicsSystem::SetIsPlaying(false);
                     CameraSystem::SetIsPlaying(false);
-                    InputSystem::GetInstance()->setMouseLock(false);
-                    InputSystem::GetInstance()->setCursorVisible(true);
                 }
                 proxy_audio_system::ScriptPauseAll();
             }
@@ -372,13 +372,9 @@ namespace TDS
             {
                 GraphicsManager::getInstance().StartFrame();
 
-
                 ecs.runSystems(3, DeltaTime);
 
-
-
                 GraphicsManager::getInstance().DrawFrame();
-
                 GraphicsManager::getInstance().EndFrame();
             }
             // Reloading

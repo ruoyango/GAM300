@@ -31,6 +31,9 @@
 #include "rttr/detail/base/core_prerequisites.h"
 #include <limits>
 
+#undef max(a,b)
+#undef min(a,b)
+
 namespace rttr
 {
 namespace detail
