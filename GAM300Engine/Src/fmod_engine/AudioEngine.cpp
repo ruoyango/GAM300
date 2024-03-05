@@ -421,6 +421,7 @@ namespace TDS
                 soundInfo.position = pos;
                 ERRCHECK(sounds[soundInfo.getUniqueID()]->setMode(FMOD_3D));
                 set3dChannelPosition(soundInfo, channels[soundInfo.getUniqueID()]);
+            }
             //else
                 //std::cout << "Audio Engine: Can't update sound position!\n";
 
