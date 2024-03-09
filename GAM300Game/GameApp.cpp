@@ -44,7 +44,7 @@ namespace TDS
         :m_window(hinstance, nCmdShow, classname)
     {
         Log::Init();
-        m_window.createWindow(wndproc, 1280, 720);
+        m_window.createWindow(wndproc, 1280, 720, true);
         TDS_INFO("window width: {}, window height: {}", m_window.getWidth(), m_window.getHeight());
     }
     void  GamApp::handleMessages(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -333,7 +333,7 @@ namespace TDS
                 if (Input::isKeyPressed(VK_ESCAPE))
                 {
                     gamePaused = !gamePaused;
-                    proxy_audio_system::ScriptPlayAllPaused();
+                    //proxy_audio_system::ScriptPlayAllPaused();
                 }
 
                 if (startPlaying)
@@ -343,6 +343,7 @@ namespace TDS
                     startPlaying = false;
                     SceneManager::GetInstance()->awake();
                     SceneManager::GetInstance()->start();
+                    proxy_audio_system::ScriptPlayAllPaused();
                 }
 
                 if (!gamePaused)

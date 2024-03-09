@@ -214,10 +214,7 @@ namespace TDS
         {
             if (checkPlaying(soundInfo))
             {
-                if (soundInfo.isLoop)
-                {
-                    ERRCHECK(channels[soundInfo.getUniqueID()]->setPaused(true));
-                }
+                ERRCHECK(channels[soundInfo.getUniqueID()]->setPaused(true));
             }
             else
             {
@@ -278,8 +275,6 @@ namespace TDS
             vol /= 100.f;
             vol = Mathf::Clamp(vol, 0.f, 1.f);
             
-            //std::cout << vol << std::endl;
-            
             mastergroup->setPaused(true);
             mastergroup->setVolume(vol);
             mastergroup->setPaused(false);
@@ -335,18 +330,20 @@ namespace TDS
                 case 'B':
                 {
                     BGM->getVolume(&vol);
+                    break;
                 }
                 default:
                 {
                     //std::cout << "No channelgroup chosen" << std::endl;
                 }
             }
-            return vol;
+            
+            return vol * 100.f;
         }
 
         void AudioEngine::SetSoundVolume(float vol, SoundInfo& soundInfo)
         {
-            soundInfo.setVolume(vol);
+            soundInfo.setVol(vol);
 
             channels[soundInfo.getUniqueID()]->setPaused(true);
             channels[soundInfo.getUniqueID()]->setVolume(vol);
@@ -407,7 +404,7 @@ namespace TDS
                     //std::cout << "Current DSP Clock: " << parentclock << ", fade length in samples  = " << fadeSampleLength << "\n";
                 }
                 //std::cout << "Updating with new soundinfo vol \n";
-                soundInfo.setVolume(newVolume); // update the SoundInfo's volume
+                soundInfo.setVol(newVolume); // update the SoundInfo's volume
             }
             else
                 std::cout << "AudioEngine: Can't update sound loop volume! (It isn't playing or might not be loaded)\n";
@@ -429,11 +426,12 @@ namespace TDS
 
         bool AudioEngine::checkPlaying(SoundInfo& soundInfo)
         {
-            bool check{ false };
+            bool playing{ false }, pause{ false };
 
-            channels[soundInfo.getUniqueID()]->isPlaying(&check);
+            channels[soundInfo.getUniqueID()]->isPlaying(&playing);
+            channels[soundInfo.getUniqueID()]->getPaused(&pause);
 
-            return check;
+            return (playing ^ pause);
         }
 
         bool AudioEngine::checkPaused(SoundInfo& soundInfo)
@@ -465,6 +463,22 @@ namespace TDS
             forward = { forwardX, forwardY, forwardZ };
             up = { upX,      upY,      upZ };
             ERRCHECK(lowLevelSystem->set3DListenerAttributes(0, &listenerpos, 0, &forward, &up));
+        }
+
+        void AudioEngine::get3DListenerCharacteristics(float& posX, float& posY, float& posZ,
+            float& velX, float& velY, float& velZ, float& forX, float& forY, float& forZ,
+            float& upX, float& upY, float& upZ)
+        {
+            FMOD_VECTOR fpos{posX, posY, posZ},
+                fvel{velX, velY, velZ},
+                ffor{forX, forY, forZ},
+                fup{ upX, upY, upZ };
+            ERRCHECK(lowLevelSystem->get3DListenerAttributes(1, &fpos, &fvel, &ffor, &fup));
+
+            posX = fpos.x; posY = fpos.y; posZ = fpos.z;
+            velX = fvel.x; velY = fvel.y; velZ = fvel.z;
+            forX = ffor.x; forY = ffor.y; forZ = ffor.z;
+            upX = fup.x; upY = fup.y; upZ = fup.z;
         }
 
         unsigned int AudioEngine::getSoundLengthInMS(SoundInfo soundInfo)
@@ -622,7 +636,9 @@ namespace TDS
         {
             FMOD_VECTOR position = { soundInfo.getX() * DISTANCEFACTOR, soundInfo.getY() * DISTANCEFACTOR, soundInfo.getZ() * DISTANCEFACTOR };
             FMOD_VECTOR velocity = { 0.0f, 0.0f, 0.0f }; // TODO Add dopplar (velocity) support
+            ERRCHECK(channel->setPaused(true));
             ERRCHECK(channel->set3DAttributes(&position, &velocity));
+            ERRCHECK(channel->setPaused(false));
         }
 
         void AudioEngine::initReverb()

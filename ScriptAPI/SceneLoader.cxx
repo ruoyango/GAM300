@@ -49,6 +49,20 @@ namespace ScriptAPI
 		TDS::QuitEngine();
 	}
 
+	void SceneLoader::LoadOptionsScreen()
+	{
+		EngineInterface::Reload();
+		TDS::SceneManager::GetInstance()->loadScene("MainMenuOptions");
+		TDS::SceneManager::GetInstance()->awake();
+		TDS::SceneManager::GetInstance()->start();
+	}
 
+	void SceneLoader::LoadTempEndScene()
+	{
+		EngineInterface::Reload();
+		TDS::SceneManager::GetInstance()->loadScene("TempEndScene");
+		TDS::SceneManager::GetInstance()->awake();
+		TDS::SceneManager::GetInstance()->start();
+	}
 
 }

@@ -16,8 +16,12 @@ public class ReturnToGame : Script
 {
     public GameBlackboard? gameBlackboard;
     UISpriteComponent buttonSprite;
+    private AudioComponent buttonSfx;
+    private string buttonSfxName = "";
     public override void Awake()
-    {  
+    {
+        buttonSfxName = "button_press";
+        buttonSfx = gameObject.GetComponent<AudioComponent>();
     }
 
     public override void Start()
@@ -27,7 +31,6 @@ public class ReturnToGame : Script
 
     public override void Update()
     {
-        //if(PopupUI.isDisplayed)
         if(gameBlackboard.gameState == GameBlackboard.GameState.Paused)
         {
             buttonSprite.SetEnabled(true);
@@ -40,7 +43,8 @@ public class ReturnToGame : Script
         //if (Input.GetMouseButtonDown(Keycode.M1) && buttonSprite.IsMouseCollided() && PopupUI.isDisplayed == true)
         if (Input.GetMouseButtonDown(Keycode.M1) && buttonSprite.IsMouseCollided() && gameBlackboard.gameState == GameBlackboard.GameState.Paused)
         {
-            Console.WriteLine("Continue Button Pressed");
+            //Console.WriteLine("Continue Button Pressed");
+            buttonSfx.play(buttonSfxName);
             PopupUI.changeDisplayed = true;
         }
     }

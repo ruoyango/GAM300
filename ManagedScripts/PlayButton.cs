@@ -14,12 +14,13 @@ using System;
 public class PlayButton : Script
 {
     public AudioComponent bgm;
-    public AudioSource audioPlayer;
-    float temp_change;
+    private AudioComponent buttonSfx;
     public string bgmName;
+    private string buttonSfxName;
     private UISpriteComponent sprite;
     public GameObject blackScreen;
     private bool fading = false;
+    private bool inMainMenu = false;
     private float incrementFading = Time.deltaTime / 3f;
     bool withinArea(float mouse, float min, float max)
     {
@@ -33,42 +34,34 @@ public class PlayButton : Script
     {
         GraphicsManagerWrapper.ToggleViewFrom2D(true);
         bgmName = "Horror_Menu_Finale_Finale";
+        buttonSfxName = "button_press";
         bgm = gameObject.GetComponent<AudioComponent>();
-        audioPlayer = new AudioSource();
+        buttonSfx = gameObject.GetComponent<AudioComponent>();
         sprite = gameObject.GetComponent<UISpriteComponent>();
     }
 
     public override void Start()
     {
-        temp_change = 50f;
+        inMainMenu = true;
     }
 
     public override void Update()
     {
-        if (bgm.finished(bgmName))
+        if (bgm.finished(bgmName) && inMainMenu)
         {
             bgm.play(bgmName);
-            //AudioSource.Play(bgmName);
+            
         }
-
-        if(Input.GetKeyDown(Keycode.V))
-        {
-            temp_change += 5f;
-            bgm.setMasterVol(temp_change);
-        }
-        else if(Input.GetKeyDown(Keycode.B))
-        {
-            temp_change -= 5f;
-            bgm.setMasterVol(temp_change);
-        }
-        Console.WriteLine(temp_change);
-
+        
+        
         if (Input.GetMouseButtonDown(Keycode.M1) && sprite.IsMouseCollided())
         {
             fading = true;
+            inMainMenu = false;
+            buttonSfx.play(buttonSfxName);
             bgm.FadeOut(3, bgmName);
-            //GraphicsManagerWrapper.ToggleViewFrom2D(false);
         }
+
         if (fading == true)
         {
             float alpha = blackScreen.GetComponent<UISpriteComponent>().getColourAlpha();
@@ -81,9 +74,6 @@ public class PlayButton : Script
                 SceneLoader.LoadStartingCutscene();
             }
         }
-
-
-
     }
 
     public override void OnDestroy()
