@@ -187,6 +187,7 @@ public class GhostMovement : Script
 
             transform.SetPositionX(-58.0f);
             transform.SetPositionZ(-1060.0f);
+            transform.SetRotationY((float)Math.PI);
         }
         if (Input.GetKeyDown(Keycode.M))
         {
