@@ -236,17 +236,7 @@ public class GhostMovement : Script
                 // If touches, loses
                 if (Vector2.Distance(ghostPosition, playerPosition) <= 75.0f)
                 {
-                    GraphicsManagerWrapper.ToggleViewFrom2D(false);
-
-                    // Jumpscare scene
-                    gameBlackboard.gameState = GameBlackboard.GameState.Jumpscare; // Locks everything else, play jumpscare
-
-                    SetEnabled(false);
-                    player.GetComponent<RigidBodyComponent>().SetLinearVelocity(new Vector3(0.0f, 0.0f, 0.0f));
-                    player.SetActive(true);
-                    player.GetComponent<FPS_Controller_Script>().SetEnabled(false);
-                    gameObject.GetComponent<JumpscareScript>().SetEnabled(true);
-                    lockGroup.SetActive(false);
+                    QueueJumpscare();
                     return;
                 }
                 else
@@ -329,6 +319,23 @@ public class GhostMovement : Script
 
                 break;
         }
+    }
+    public void QueueJumpscare()
+    {
+        GraphicsManagerWrapper.ToggleViewFrom2D(false);
+
+        // Jumpscare scene
+        gameBlackboard.gameState = GameBlackboard.GameState.Jumpscare; // Locks everything else, play jumpscare
+        player.GetComponent<FPS_Controller_Script>().StandUp();
+
+        SetEnabled(false);
+        player.GetComponent<RigidBodyComponent>().SetLinearVelocity(new Vector3(0.0f, 0.0f, 0.0f));
+        player.SetActive(true);
+        player.GetComponent<FPS_Controller_Script>().SetEnabled(false);
+        gameObject.GetComponent<JumpscareScript>().SetEnabled(true);
+        lockGroup.SetActive(false);
+
+        Quaternion quat = new Quaternion(transform.GetRotation());
     }
 
     public void PlayMonsterWalkingSoundInitial()
@@ -820,17 +827,7 @@ public class GhostMovement : Script
                 // If touches, loses
                 if (Vector2.Distance(ghostPosition, playerPosition) <= 75.0f)
                 {
-                    GraphicsManagerWrapper.ToggleViewFrom2D(false);
-
-                    // Jumpscare scene
-                    gameBlackboard.gameState = GameBlackboard.GameState.Jumpscare; // Locks everything else, play jumpscare
-
-                    SetEnabled(false);
-                    player.GetComponent<RigidBodyComponent>().SetLinearVelocity(new Vector3(0.0f, 0.0f, 0.0f));
-                    player.SetActive(true);
-                    player.GetComponent<FPS_Controller_Script>().SetEnabled(false);
-                    gameObject.GetComponent<JumpscareScript>().SetEnabled(true);
-                    lockGroup.SetActive(false);
+                    QueueJumpscare();
                     return;
                 }
                 else
