@@ -55,7 +55,6 @@ public class GalleryHiding : Script
 
     public override void Update()
     {
-
         if (gameObject.GetComponent<RigidBodyComponent>().IsRayHit())
         {
             _InteractUI.SetActive(true);
