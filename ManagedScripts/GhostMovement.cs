@@ -203,7 +203,8 @@ public class GhostMovement : Script
             case GhostEvent.Nothing:
 
                 gameObject.GetComponent<AnimatedComponent>().StopAnimation();
-                //if (WaypointPathfinder.SameRoom(ghostPosition, playerPosition)) // If player is in the same room as ghost = sees player, chase player
+
+                //if (gameObject.GetComponent<RigidBodyComponent>().IsRayHit()) // If player is in sight
                 //{
                 //    // NOTE: May want to add in "not hiding" condition
                 //    currentEvent = GhostEvent.ChasingPlayer;
@@ -226,11 +227,12 @@ public class GhostMovement : Script
 
                 gameObject.GetComponent<AnimatedComponent>().PlayAnimation();
 
-                if (!WaypointPathfinder.SameRoom(ghostPosition, playerPosition))
-                {
-                    currentEvent = GhostEvent.Nothing;
-                    break;
-                }
+                //if (!gameObject.GetComponent<RigidBodyComponent>().IsRayHit()) // If player is not in sight
+                //{
+                //    // NOTE: May want to add in "not hiding" condition
+                //    currentEvent = GhostEvent.Nothing;
+                //    break;
+                //}
 
                 if (bedroomHidingGameObject.GetComponent<Hiding>().hiding || 
                     galleryHidingGameObject.GetComponent<GalleryHiding>().hiding) // NOTE: Will add in the other hiding boolean variables later
@@ -408,6 +410,17 @@ public class GhostMovement : Script
         PlayMonsterWalkingSoundInitial();
     }
 
+    //public bool PlayerInSight()
+    //{
+    //    Vector2 lineToNextPosition = new Vector2(player.transform.GetPosition().X - transform.GetPosition().X, player.transform.GetPosition().Z - transform.GetPosition().Z);
+    //    float lineToNextPositionLength = Mathf.Sqrt(lineToNextPosition.X * lineToNextPosition.X + lineToNextPosition.Y * lineToNextPosition.Y);
+    //    float forwardVectorLength = Mathf.Sqrt(Vector3.Forward().X * Vector3.Forward().X + Vector3.Forward().Z * Vector3.Forward().Z);
+
+    //    float rotationOfPlayer = Mathf.Acos((lineToNextPosition.X * Vector3.Forward().X + lineToNextPosition.Y * Vector3.Forward().Z) / (lineToNextPositionLength * forwardVectorLength));
+
+    //    return false;
+    //}
+
     public bool MoveTo(Vector2 destination, float speed)
     {
         Vector2 ghostPosition = new Vector2(transform.GetPosition().X, transform.GetPosition().Z);
@@ -439,14 +452,14 @@ public class GhostMovement : Script
 
     public void BedroomHidingEvent()
     {
-        Console.WriteLine("BedroomHidingEvent");
-
         if (startEvent) // Initialize variables (teleporting monster to starting position etc)
         {
             transform.SetPosition(new Vector3(1790.0f, transform.GetPosition().Y, -750.0f));
             eventStep = 0;
             startEvent = false;
             //Console.WriteLine("initialized bedroom hiding event");
+
+            gameObject.GetComponent<AnimatedComponent>().PlayAnimation();
         }
 
         if (!bedroomHidingGameObject.GetComponent<Hiding>().hiding) // If player comes out of hiding, monster will chase player
@@ -462,8 +475,6 @@ public class GhostMovement : Script
         switch (eventStep)
         {
             case 0: // Moving from SH door to end of bedframe in bed
-
-                gameObject.GetComponent<AnimatedComponent>().PlayAnimation();
 
                 if (MoveTo(new Vector2(1790, -323), 5.0f))
                 {
