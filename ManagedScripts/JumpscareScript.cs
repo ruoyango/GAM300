@@ -26,9 +26,6 @@ public class JumpscareScript : Script
     }
     public override void Update()
     {
-        // To remove
-        //jumpscareSequenceIndex = 3;
-
         switch (jumpscareSequenceIndex)
         {
             // 1. calculating rotations
@@ -47,35 +44,6 @@ public class JumpscareScript : Script
                     yRotation = 360 - (float)(yRotation / Math.PI * 180.0f);
                 else
                     yRotation = (float)(yRotation / Math.PI * 180.0f);
-
-
-                //float playerRotation = player.transform.GetRotation().Y;
-                //float playerRotationRange = playerRotation + 180;
-
-                //if (playerRotationRange >= 360)
-                //{
-                //    playerRotationRange -= 360;
-
-                //    if (yRotation >= playerRotationRange && yRotation <= playerRotation)
-                //    {
-                //        turnClockwise = true;
-                //    }
-                //    else
-                //    {
-                //        turnClockwise = false;
-                //    }
-                //}
-                //else
-                //{
-                //    if (yRotation >= playerRotation && yRotation <= playerRotationRange)
-                //    {
-                //        turnClockwise = false;
-                //    }
-                //    else
-                //    {
-                //        turnClockwise = true;
-                //    }
-                //}
 
                 ++jumpscareSequenceIndex;
 
@@ -97,6 +65,7 @@ public class JumpscareScript : Script
 
                 if (player.transform.GetRotation().Y >= yRotation - 3 && player.transform.GetRotation().Y <= yRotation + 3)
                 {
+                    gameObject.GetComponent<AudioComponent>().play("mon_death");
                     ++jumpscareSequenceIndex;
                 }
 
@@ -106,7 +75,10 @@ public class JumpscareScript : Script
             // Add head shaking
             case 2:
 
-                ++jumpscareSequenceIndex;
+                if (gameObject.GetComponent<AudioComponent>().finished("mon_death"))
+                {
+                    ++jumpscareSequenceIndex;
+                }
 
                 break;
 

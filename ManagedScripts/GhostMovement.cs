@@ -35,7 +35,6 @@ public class GhostMovement : Script
 
     #region Chasing Player Variables
 
-    public bool isChasingPlayer = false;
     public bool playerMoved;
     public GameObject player;
 
@@ -91,6 +90,7 @@ public class GhostMovement : Script
     public float galleryTimer;
     public bool galleryHideEventDone;
     public bool galleryChaseEventDone;
+    public GameObject galleryHidingGameObject;
 
     #endregion
 
@@ -182,8 +182,11 @@ public class GhostMovement : Script
         // Testing (to be removed)
         if (Input.GetKeyDown(Keycode.K))
         {
-            currentEvent = GhostEvent.GalleryHidingEvent;
+            currentEvent = GhostEvent.DiningRoomEvent;
             startEvent = true;
+
+            transform.SetPositionX(-58.0f);
+            transform.SetPositionZ(-1060.0f);
         }
         if (Input.GetKeyDown(Keycode.M))
         {
@@ -223,21 +226,26 @@ public class GhostMovement : Script
                     break;
                 }
 
-                if (bedroomHidingGameObject.GetComponent<Hiding>().hiding) // NOTE: Will add in the other hiding boolean variables later
+                if (bedroomHidingGameObject.GetComponent<Hiding>().hiding || 
+                    galleryHidingGameObject.GetComponent<GalleryHiding>().hiding) // NOTE: Will add in the other hiding boolean variables later
                 {
                     currentEvent = previousEvent;
                 }
 
                 // If touches, loses
-                if (Vector2.Distance(ghostPosition, playerPosition) <= 40.0f)
+                if (Vector2.Distance(ghostPosition, playerPosition) <= 75.0f)
                 {
+                    GraphicsManagerWrapper.ToggleViewFrom2D(false);
+
                     // Jumpscare scene
                     gameBlackboard.gameState = GameBlackboard.GameState.Jumpscare; // Locks everything else, play jumpscare
 
                     SetEnabled(false);
                     player.GetComponent<RigidBodyComponent>().SetLinearVelocity(new Vector3(0.0f, 0.0f, 0.0f));
+                    player.SetActive(true);
                     player.GetComponent<FPS_Controller_Script>().SetEnabled(false);
                     gameObject.GetComponent<JumpscareScript>().SetEnabled(true);
+                    lockGroup.SetActive(false);
                     return;
                 }
                 else
@@ -372,7 +380,6 @@ public class GhostMovement : Script
         soundSpeed -= 0.1f;
         speed += 0.2f;
         playSoundTimer = soundSpeed;
-        isChasingPlayer = true;
 
         // Move monster to player position if lockpick fails
         doorPosition = new Vector2(player.transform.GetPosition().X, player.transform.GetPosition().Z);
@@ -694,112 +701,63 @@ public class GhostMovement : Script
 
     public void GalleryHidingEvent()
     {
-        if (startEvent) // Initialize variables
+        if (startEvent) // Initialize variables (teleporting monster to starting position etc)
         {
-            transform.SetPositionX(-1929.0f);
-            transform.SetPositionZ(0.0f);
-
+            transform.SetPosition(new Vector3(-1920.0f, transform.GetPosition().Y, -300.0f));
             eventStep = 0;
             startEvent = false;
-
-            //Console.WriteLine("initialized gallery hiding event for the 3 paintings");
         }
 
-        // When player collects a painting, monster moves from gallery - left wing door to either painting took (when its the top left) or
-        // just not stop and goes around (when its the other 2 - wrong ones)
-        // Goes towards study
-        // Goes back out to the left wing and stops behind gallery - left wing door
+        if (!galleryHidingGameObject.GetComponent<GalleryHiding>().hiding) // If player comes out of hiding, monster will chase player
+        {
+            previousEvent = GhostEvent.GalleryHidingEvent;
+            currentEvent = GhostEvent.ChasingPlayer;
+        }
 
-        switch (eventStep) 
-        { 
-            case 0: // Make noise
+        AudioComponent audio = gameObject.GetComponent<AudioComponent>();
 
-                ++eventStep;
+        switch (eventStep)
+        {
+            case 0: // Walk to Study Room Door
 
+                if (MoveTo(new Vector2(-2850, -300), 10.0f))
+                {
+                    ++eventStep;
+                }
+
+                audio.play("pc_afterscare_breathing");
+                audio.play("pc_afterscare_heartbeat");
                 break;
 
-            case 1: // Move into gallery
+            case 1: // Walk into Study Room
 
-                if (MoveTo(new Vector2(-1926, -600), speed))
+                if (MoveTo(new Vector2(-2850, 175), 5.0f))
                 {
                     ++eventStep;
                 }
 
                 break;
 
-            case 2: // Move to painting if its the correct one, else skip
+            case 2: // Walk out of Study Room
 
-                if (galleryCorrectPainting)
-                {
-                    if (MoveTo(new Vector2(-1538, -729), speed))
-                    {
-                        galleryTimer = 1.0f;
-                        ++eventStep;
-                    }
-                }
-                else
-                    ++eventStep;
-
-                break;
-
-            case 3: // Stare at painting if its the correct one, else skip
-
-                if (galleryCorrectPainting)
-                {
-                    if (galleryTimer <= 0)
-                        ++eventStep;
-                    galleryTimer -= Time.deltaTime;
-                }
-                else
-                    ++eventStep;
-
-                break;
-
-            case 4: // Move to before study room - gallery door
-
-                if (MoveTo(new Vector2(-2840, -200), speed))
+                if (MoveTo(new Vector2(-1920, 175), 5.0f))
                 {
                     ++eventStep;
                 }
 
                 break;
 
-            case 5: // Move into study room
+            case 3: // Event done
 
-                if (MoveTo(new Vector2(-2840, 100), speed))
-                {
-                    ++eventStep;
-                }
-
-                break;
-
-            case 6: // Move to before study room - left wing door
-
-                if (MoveTo(new Vector2(-2380, 178), speed))
-                {
-                    ++eventStep;
-                }
-
-                break;
-
-            case 7: // Move into left wing
-
-                if (MoveTo(new Vector2(-1929, 100), speed))
-                {
-                    ++eventStep;
-                }
-
-                break;
-
-            case 8: // Event done
-
-                currentEvent = GhostEvent.Nothing;
                 galleryHideEventDone = true;
+                currentEvent = GhostEvent.Nothing;
+                GalleryHiding.GhostShouldMove = false;
+
+                audio.FadeOut(2, "pc_afterscare_breathing");
+                audio.FadeOut(2, "pc_afterscare_heartbeat");
 
                 break;
-
         }
-
     }
 
     public void FinalChaseEvent()
@@ -815,7 +773,7 @@ public class GhostMovement : Script
             eventStep = 0;
             startEvent = false;
 
-            //Console.WriteLine("initialized gallery hiding event for the 3 paintings");
+            //Console.WriteLine("initialized final chasing event");
         }
 
         // Monster starts in the gallery
