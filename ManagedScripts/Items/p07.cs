@@ -56,6 +56,7 @@ public class p07 : Script
         {
             Console.WriteLine("p07");
             CheckpointGameObject.OverrideCheckpoint();
+            InteractUI.isShow = true;
 
             if (once)
             {
@@ -97,17 +98,9 @@ public class p07 : Script
                 }
             }
         }
-    }
-
-    public override void LateUpdate()
-    {
-        //if (gameObject.GetComponent<RigidBodyComponent>().IsRayHit() && gameObject.GetComponent<RigidBodyComponent>().IsPlayerCast())
-        //{
-        //    _InteractUI.SetActive(true);
-        //}
-        //else
-        //{
-        //    _InteractUI.SetActive(false);
-        //}
+        else
+        {
+            //_InteractUI.SetActive(false);
+        }
     }
 }
