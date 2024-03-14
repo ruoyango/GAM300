@@ -12,6 +12,8 @@ using Microsoft.VisualBasic;
 using ScriptAPI;
 using System;
 
+// Bedroom painting
+
 public class p07 : Script
 {
     //RigidBodyComponent rigidBodyComponent; //for raycast?
@@ -33,8 +35,11 @@ public class p07 : Script
     public static bool isPaintingCollected;
     bool once = true;
 
+    public Checkpoint CheckpointGameObject;
+
     override public void Awake()
     {
+        CheckpointGameObject = GameObjectScriptFind("Checkpoint");
         AudioPlayer = gameObject.GetComponent<AudioComponent>();
         isPaintingCollected = false;
     }
@@ -50,6 +55,7 @@ public class p07 : Script
         if (gameObject.GetComponent<RigidBodyComponent>().IsRayHit() && gameObject.GetComponent<RigidBodyComponent>().IsPlayerCast())
         {
             Console.WriteLine("p07");
+            CheckpointGameObject.OverrideCheckpoint();
 
             if (once)
             {
@@ -75,8 +81,8 @@ public class p07 : Script
 
                 // View Object Stuff
                 gameObject.GetComponent<GraphicComponent>().SetView2D(true);
-                gameObject.transform.SetPosition(new Vector3(-10000.0f, -10000.0f, -10000.0f));
-                gameObject.transform.SetRotation(new Vector3(-0.0f, -0.0f, -0.0f));
+                //gameObject.transform.SetPosition(new Vector3(-10000.0f, -10000.0f, -10000.0f));
+                //gameObject.transform.SetRotation(new Vector3(-0.0f, -0.0f, -0.0f));
                 gameObject.SetActive(false);
 
                 // Trigger Painting Event
