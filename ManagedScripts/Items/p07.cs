@@ -39,7 +39,7 @@ public class p07 : Script
 
     override public void Awake()
     {
-        CheckpointGameObject = GameObjectScriptFind("Checkpoint");
+        CheckpointGameObject = GameObjectScriptFind("Checkpoint").GetComponent<Checkpoint>();
         AudioPlayer = gameObject.GetComponent<AudioComponent>();
         isPaintingCollected = false;
     }
