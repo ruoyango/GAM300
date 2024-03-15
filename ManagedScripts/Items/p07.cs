@@ -35,11 +35,11 @@ public class p07 : Script
     public static bool isPaintingCollected;
     bool once = true;
 
-    public Checkpoint CheckpointGameObject;
+    public Checkpoint checkpoint;
 
     override public void Awake()
     {
-        CheckpointGameObject = GameObjectScriptFind("Checkpoint").GetComponent<Checkpoint>();
+        checkpoint = GameObjectScriptFind("Checkpoint").GetComponent<Checkpoint>();
         AudioPlayer = gameObject.GetComponent<AudioComponent>();
         isPaintingCollected = false;
     }
@@ -55,7 +55,6 @@ public class p07 : Script
         if (gameObject.GetComponent<RigidBodyComponent>().IsRayHit() && gameObject.GetComponent<RigidBodyComponent>().IsPlayerCast())
         {
             Console.WriteLine("p07");
-            CheckpointGameObject.OverrideCheckpoint();
             InteractUI.isShow = true;
 
             if (once)
@@ -90,11 +89,15 @@ public class p07 : Script
                 AudioPlayer.play("pc_stealpainting1");
                 GameplaySubtitles.counter = 13;
 
+                checkpoint.OverrideCheckpoint(GhostMovement.GhostEvent.BedroomHidingEvent);
+
                 // hiding event 
                 hidingGameObject.GetComponent<Hiding>().numOfPaintingsTook++;
                 if (hidingGameObject.GetComponent<Hiding>().numOfPaintingsTook == 1)
                 {
                     ghost.GetComponent<GhostMovement>().PlayMonsterWalkingSoundInitial();
+                    ghost.GetComponent<GhostMovement>().currentEvent = GhostMovement.GhostEvent.BedroomHidingEvent;
+                    ghost.GetComponent<GhostMovement>().startEvent = true;
                 }
             }
         }
