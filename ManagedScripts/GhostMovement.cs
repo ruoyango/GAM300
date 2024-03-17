@@ -512,7 +512,7 @@ public class GhostMovement : Script
             //Console.WriteLine("initialized bedroom hiding event");
 
             startEvent = false;
-            bedroomMonsterAppearTimer = 3.0f;
+            bedroomMonsterAppearTimer = 5.0f;
 
             previousEvent = GhostEvent.BedroomHidingEvent;
             return;
