@@ -86,14 +86,15 @@ public class p07 : Script
                 gameObject.SetActive(false);
 
                 // Trigger Painting Event
+                AudioPlayer.play("gallery_movepainting");
                 AudioPlayer.play("pc_stealpainting1");
                 GameplaySubtitles.counter = 13;
 
                 checkpoint.OverrideCheckpoint(GhostMovement.GhostEvent.BedroomHidingEvent);
 
                 // hiding event 
-                hidingGameObject.GetComponent<Hiding>().numOfPaintingsTook++;
-                if (hidingGameObject.GetComponent<Hiding>().numOfPaintingsTook == 1)
+                hidingGameObject.GetComponent<EventBedroomHiding>().numOfPaintingsTook++;
+                if (hidingGameObject.GetComponent<EventBedroomHiding>().numOfPaintingsTook == 1)
                 {
                     ghost.GetComponent<GhostMovement>().PlayMonsterWalkingSoundInitial();
                     ghost.GetComponent<GhostMovement>().currentEvent = GhostMovement.GhostEvent.BedroomHidingEvent;
