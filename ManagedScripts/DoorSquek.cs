@@ -26,7 +26,7 @@ public class DoorSquek : Script
     }
     public override void Update()
     {
-        if (gameObject.GetComponent<RigidBodyComponent>().IsRayHit() && Input.GetKeyDown(Keycode.E))
+        if (gameObject.GetComponent<RigidBodyComponent>().IsRayHit()&& Input.GetKeyDown(Keycode.E))
         {
             checkpoint.OverrideCheckpoint(GhostMovement.GhostEvent.Nothing);
             audio.play(doorSquekSFX);
@@ -39,6 +39,7 @@ public class DoorSquek : Script
             elapsedTime += Time.deltaTime;
             if (elapsedTime >= 1f)
             {
+                audio.set3DCoords(transform.GetPosition(), monsterAlert);
                 audio.play(monsterAlert);
                 audio.play(monsterChase);
                 alerted = false;

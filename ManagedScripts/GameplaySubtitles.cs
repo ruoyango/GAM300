@@ -19,13 +19,17 @@ public class GameplaySubtitles : Script
     [SerializeField]
     public static int counter;
     public static bool next = true;
+    public GameObject? fire;
     float timer;
     int pressCtrlTwice = 0;
+    float subtitleTimer = 2.0f;
+
+    private bool Isfire = true;
 
     public override void Awake()
     {
         Audiofiles = new String[17];
-        Subtitles = new String[47];
+        Subtitles = new String[48];
         GraphicsManagerWrapper.ToggleViewFrom2D(false);
         Subtitles[0] = "Press [F] for flashlight";
         Subtitles[1] = "Press [WASD] to move";
@@ -86,7 +90,8 @@ public class GameplaySubtitles : Script
         Subtitles[43] = "That might have opened the door. Worth taking a look.";
         Subtitles[44] = "Sounds like it opened something. But what?";
         Subtitles[45] = "That's it. Time to get out of here.";
-        Subtitles[46] = "I don't think I can move this silently, that thing will definitely know where I am";
+        Subtitles[46] = "I don't think I can move this silently";
+        Subtitles[47] = "That thing will definitely know where I am";
 
         Audiofiles[0] = ""; //wasd no audio
         Audiofiles[1] = ""; //no audio
@@ -127,6 +132,10 @@ public class GameplaySubtitles : Script
 
         } if (counter == 1)
         {
+            audio.set3DCoords(/*GameObjectScriptFind("(Kitchen) Fridge").*/transform.GetPosition(), "kitchen_ambience");
+            //Console.WriteLine(GameObjectScriptFind("(Kitchen) Fridge").transform.GetPosition().X);
+            //Console.WriteLine(GameObjectScriptFind("(Kitchen) Fridge").transform.GetPosition().Z);
+            audio.play("kitchen_ambience");
             if (Input.GetKeyDown(Keycode.W) || Input.GetKeyDown(Keycode.A) || Input.GetKeyDown(Keycode.S) || Input.GetKeyDown(Keycode.D))
             {
                 //go next line
@@ -304,6 +313,8 @@ public class GameplaySubtitles : Script
         {
             if (audio.finished("pc_stealpainting1"))
             {
+
+                audio.set3DCoords(GhostMovement.GhostTransformPosition, "mon_alerted3");
                 audio.play("mon_alerted3");
 
                 audio.stop("pc_stealpainting1");
@@ -316,9 +327,14 @@ public class GameplaySubtitles : Script
             if (audio.finished("gallery_movepainting")&& audio.finished("painting_dropin")) // Creaking sound ends
             {
                 audio.stop("gallery_movepainting");
+                audio.set3DCoords(GhostMovement.GhostTransformPosition, "mon_alerted3");
                 audio.play("mon_alerted3");
                 audio.play("pc_monsterrattledoor"); // Someone's coming, better hide
                 counter = 22; //commented this out as u dont hide after every painting u pick up
+            }
+            if (!Isfire)
+            {
+                fire.SetActive(false);
             }
         }
         if (counter == 22)
@@ -357,6 +373,20 @@ public class GameplaySubtitles : Script
         }
         if (counter == 46)
         {
+            if (subtitleTimer <= 0.0f)
+            {
+                GameplaySubtitles.counter = 47;
+            }
+            else
+            {
+                subtitleTimer -= Time.deltaTime;
+                GameplaySubtitles.counter = 46;
+
+            }
+        }
+        if (counter == 47)
+        {
+
             if (audio.finished("pc_movethissilently"))
             {
                 audio.stop("pc_movethissilently");
@@ -411,11 +441,20 @@ public class GameplaySubtitles : Script
             if (audio.finished("misc_leave"))
             {
                 audio.play("pc_scream");
+                audio.set3DCoords(transform.GetPosition(), "painting_dropin");
                 audio.play("painting_dropin"); //scream and drop painting into fire same time 
                 GameplaySubtitles.counter = 8;
             }
+            audio.set3DCoords(transform.GetPosition(), "painting_burning");
             audio.play("painting_burning");
+            if (Isfire)
+            {
+                fire.SetActive(true);
+                Isfire = false;
+            }
         }
+
+       
 
         // if (Input.GetKeyDown(Keycode.SPACE))
         // {
@@ -425,7 +464,7 @@ public class GameplaySubtitles : Script
         // }
         // else
         // {
-        //     audio.playQueue();
+        //     audio.playplay();
 
         //     if (counter > 16)//cutscene over
         //     {

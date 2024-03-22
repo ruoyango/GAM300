@@ -96,14 +96,17 @@ public class LockPick1 : Script
     public GameObject doorStates;
 
     public float lockpickShakeTimer;
+    private float lockpickTimerCountdown = 0.4f;
+    private bool lockpickFlashing = false;
 
     // Start is called before the first frame update
     override public void Awake()
     {
-        lockSoundEffects = new String[3];
+        lockSoundEffects = new String[4];
         lockSoundEffects[0] = "lockpick_turn";
         lockSoundEffects[1] = "lockpick success";
         lockSoundEffects[2] = "lockpick_failtry";
+        lockSoundEffects[3] = "lockpick_failfull";
 
         rattleSoundEffects = new String[7];
         rattleSoundEffects[0] = "lockpick_move1";
@@ -137,6 +140,7 @@ public class LockPick1 : Script
         counter = 0;
         savedNumOfTries = 0;
         audio = gameObject.GetComponent<AudioComponent>();
+        playOnce = true;
         next_VO = true;
         // GameplaySubtitles.counter = 5; //no effect on set gameplay subtitles to be empty
 
@@ -207,9 +211,9 @@ public class LockPick1 : Script
         UISpriteComponent ClosedSub = GameObjectScriptFind("Subtitles").GetComponent<UISpriteComponent>();
         //UISpriteComponent Sprite = gameObject.GetComponent<UISpriteComponent>();
 
-        if (counter < 5 && next_VO)
-        {
-            audio.play(playerGuideVO[counter]);
+        if (counter < 5 && next_VO && playOnce)
+        {            
+            audio.Queue(playerGuideVO[counter]);
             next_VO = false;
         }
         if (audio.finished(playerGuideVO[0]))
@@ -521,7 +525,6 @@ public class LockPick1 : Script
 
                     audio.play("pc_findtherightspot");
                 }
-                playOnce = true;
             }
 
             if (audio.finished("pc_findtherightspot"))
@@ -590,13 +593,16 @@ public class LockPick1 : Script
                 if (deduct == true)
                 {
                     numOfTries -= 1;
+                    audio.play(lockSoundEffects[2]);
                     deduct = false;
+                    lockpickFlashing = true;
                 }
+
 
                 if (numOfTries <= 0)
                 {
                     // NOTE: Audio
-                    audio.play(lockSoundEffects[2]);
+                    audio.play(lockSoundEffects[3]);
                     movePick = false;
                     timer = 1.0f;
                     failed = true;
@@ -606,7 +612,17 @@ public class LockPick1 : Script
         #endregion
 
         _AmtOfTries.SetFontMessage("Number of tries left: " + numOfTries.ToString());
-
+        if (lockpickFlashing)
+        {
+            lockpickTimerCountdown -= Time.deltaTime;
+            _AmtOfTries.SetFontColour(new Vector4(1.0f, 0.0f, 0.0f, 1.0f)); // red
+            if (lockpickTimerCountdown <= 0)
+            {
+                lockpickFlashing = false;
+                lockpickTimerCountdown = 0.4f;
+                _AmtOfTries.SetFontColour(new Vector4(1.0f, 1.0f, 1.0f, 1.0f)); // white
+            }
+        }
         if (numOfTries <= 1)
         {
             _AmtOfTries.SetFontColour(new Vector4(1.0f, 0.0f, 0.0f, 1.0f)); // red
@@ -614,7 +630,7 @@ public class LockPick1 : Script
 
         if (passed)
         {
-            audio.FadeOut(3, "outside_ambience");
+            //audio.FadeOut(3, "outside_ambience");
             movePick = false;
             audio.stop(rattleSoundEffects[0]);
             counter = 1;
@@ -644,12 +660,12 @@ public class LockPick1 : Script
                 if (doorIndex == 0)
                 {
                     counter = 2;
-                    audio.play(playerGuideVO[2]); //aite looks like im in
+                    audio.Queue(playerGuideVO[2]); //aite looks like im in
                     next_VO = true;
                     GameplaySubtitles.counter = 7;
                     Flashlight_Script.batteryLife = 49;
                     enteredHouse = true;
-
+                    playOnce = false;
                 }
                 if (doorIndex == 1)
                 {
